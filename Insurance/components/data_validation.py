@@ -19,6 +19,7 @@ class DataValidation:
                     data_validation_config:config_entity.DataValidationConfig,
                     data_ingestion_artifact:artifact_entity.DataIngestionArtifact):
         try:
+            logging.info(f"{'>>'*20} Data Validation {'<<'*20}")
             self.data_validation_config = data_validation_config
             self.data_ingestion_artifact=data_ingestion_artifact
             self.validation_error=dict()
@@ -28,7 +29,14 @@ class DataValidation:
     
 
     def drop_missing_values_columns(self,df:pd.DataFrame,report_key_name:str)->Optional[pd.DataFrame]:
-      
+        """
+        This function will drop column which contains missing value more than specified threshold
+
+        df: Accepts a pandas dataframe
+        threshold: Percentage criteria to drop a column
+        =====================================================================================
+        returns Pandas DataFrame if atleast a single column is available after missing columns drop else None
+        """
         try:
             
             threshold = self.data_validation_config.missing_threshold
@@ -76,7 +84,9 @@ class DataValidation:
 
             for base_column in base_columns:
                 base_data,current_data = base_df[base_column],current_df[base_column]
+                #Null hypothesis is that both column data drawn from same distrubtion
                 
+                logging.info(f"Hypothesis {base_column}: {base_data.dtype}, {current_data.dtype} ")
                 same_distribution =ks_2samp(base_data,current_data)
 
                 if same_distribution.pvalue>0.05:
@@ -111,7 +121,9 @@ class DataValidation:
             logging.info(f"Reading test dataframe")
             test_df = pd.read_csv(self.data_ingestion_artifact.test_file_path)
 
+            logging.info(f"Drop null values colums from train df")
             train_df = self.drop_missing_values_columns(df=train_df,report_key_name="missing_values_within_train_dataset")
+            logging.info(f"Drop null values colums from test df")
             test_df = self.drop_missing_values_columns(df=test_df,report_key_name="missing_values_within_test_dataset")
             
             exclude_columns = [TARGET_COLUMN]

@@ -37,7 +37,7 @@ class ModelPusher:
 
             #saved model dir
             logging.info(f"Saving model in saved model dir")
-            transformer_path=self.model_resolver.get_latest_save_transfomer_path()
+            transformer_path=self.model_resolver.get_latest_save_transformer_path()
             model_path=self.model_resolver.get_latest_save_model_path()
             target_encoder_path=self.model_resolver.get_latest_save_target_encoder_path()
 

@@ -3,13 +3,13 @@ from Insurance.exception import InsuranceException
 from Insurance.logger import logging
 from datetime import datetime
 
-
 FILE_NAME = "insurance.csv"
 TRAIN_FILE_NAME = "train.csv"
 TEST_FILE_NAME = "test.csv"
 TRANSFORMER_OBJECT_FILE_NAME = "transformer.pkl"
-TARGET_ENCODER_OBJECT_FILE_NAME = "target_encoder.pkl"
 MODEL_FILE_NAME = "model.pkl"
+
+TARGET_ENCODER_OBJECT_FILE_NAME = "target_encoder.pkl"
 
 class TrainingPipelineConfig:
     
@@ -51,7 +51,6 @@ class DataValidationConfig:
         self.base_file_path = os.path.join("insurance.csv")
 
 
-
 class DataTransformationConfig:
     
     def __init__(self,training_pipeline_config:TrainingPipelineConfig):
@@ -62,15 +61,13 @@ class DataTransformationConfig:
         self.target_encoder_path = os.path.join(self.data_transformation_dir,"target_encoder",TARGET_ENCODER_OBJECT_FILE_NAME)
 
 
-
-class ModelTrainingConfig:
+class ModelTrainerConfig:
+    
     def __init__(self,training_pipeline_config:TrainingPipelineConfig):
-        self.model_trainer_dir = os.path.join(training_pipeline_config.artifact_dir, "model_trainer")
-        self.model_path = os.path.join(self.model_trainer_dir, "model", MODEL_FILE_NAME)
-        self.expected_accuracy = 0.7
-        self.overfitting_threshold = 0.3
-
-# Model Evaluation
+        self.model_trainer_dir = os.path.join(training_pipeline_config.artifact_dir , "model_trainer")
+        self.model_path = os.path.join(self.model_trainer_dir,"model",MODEL_FILE_NAME)
+        self.expected_score = 0.7
+        self.overfitting_threshold = 0.3 # overfiting score
 
 
 class ModelEvaluationConfig:
@@ -78,10 +75,8 @@ class ModelEvaluationConfig:
         self.change_threshold = 0.01
 
 
-# Model Pusher
-
 class ModelPusherConfig:
-    
+
     def __init__(self,training_pipeline_config:TrainingPipelineConfig):
         self.model_pusher_dir = os.path.join(training_pipeline_config.artifact_dir , "model_pusher")
         self.saved_model_dir = os.path.join("saved_models")
@@ -89,5 +84,3 @@ class ModelPusherConfig:
         self.pusher_model_path = os.path.join(self.pusher_model_dir,MODEL_FILE_NAME)
         self.pusher_transformer_path = os.path.join(self.pusher_model_dir,TRANSFORMER_OBJECT_FILE_NAME)
         self.pusher_target_encoder_path = os.path.join(self.pusher_model_dir,TARGET_ENCODER_OBJECT_FILE_NAME)
-
-
